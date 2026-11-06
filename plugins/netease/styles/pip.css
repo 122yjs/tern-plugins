@@ -1,124 +1,139 @@
 /* Picture in picture: the cover alone, and the details only while the pointer is over it. */
-.tn-pane.pip [data-role~='netease-player'] {
-	display: block;
-	height: 100%;
-	margin: 0;
-	max-width: none;
-	padding: 0;
-	position: relative;
-	width: 100%;
-}
+.tn-pane.pip [data-surface='plugin.netease.player'] {
+	&.sf-main {
+		flex: 1 1 auto;
+		height: auto;
+		margin: -10px;
+		max-height: none;
+		overflow: hidden;
+		padding: 0;
+		position: relative;
+	}
+	&.sf-dock {
+		display: none;
+	}
 
-.tn-pane.pip [data-role~='netease-player__backdrop'] {
-	display: block;
-	inset: 0;
-	position: absolute;
-}
+	[data-role~='netease-player'] {
+		display: block;
+		inset: 0;
+		margin: 0;
+		max-width: none;
+		padding: 0;
+		position: absolute;
+		width: 100%;
+	}
 
-.tn-pane.pip [data-role~='netease-player__backdrop'] .sf-img,
-.tn-pane.pip [data-role~='netease-player__backdrop'] .sf-img-frame {
-	border-radius: 0;
-	box-shadow: none;
-	height: 100%;
-	max-width: none;
-	object-fit: cover;
-	width: 100%;
-}
+	[data-role~='netease-player__backdrop'] {
+		display: block;
+		inset: 0;
+		position: absolute;
 
-.tn-pane.pip [data-role~='netease-player__backdrop'][data-role~='netease-player__cover--empty'] {
-	background: var(--sf-shade);
-	display: grid;
-	place-items: center;
-}
+		.sf-img,
+		.sf-img-frame {
+			border-radius: 0;
+			box-shadow: none;
+			height: 100%;
+			max-width: none;
+			object-fit: cover;
+			background-position: center;
+			background-size: cover;
+			width: 100%;
+		}
+	}
+	[data-role~='netease-player__backdrop'][data-role~='netease-player__cover--empty'] {
+		background: var(--sf-shade);
+		display: grid;
+		place-items: center;
+	}
 
-.tn-pane.pip [data-role~='netease-player__scrim'] {
-	background: linear-gradient(rgb(0 0 0 / 0%), rgb(0 0 0 / 50%) 45%, rgb(0 0 0 / 82%));
-	display: block;
-	inset: 0;
-	opacity: 0;
-	pointer-events: none;
-	position: absolute;
-	transition: opacity 0.16s var(--ease);
-}
+	[data-role~='netease-player__scrim'] {
+		background: linear-gradient(rgb(0 0 0 / 0%), rgb(0 0 0 / 50%) 45%, rgb(0 0 0 / 82%));
+		display: block;
+		inset: 0;
+		opacity: 0;
+		pointer-events: none;
+		position: absolute;
+		transition: opacity 0.16s var(--ease);
+	}
 
-.tn-pane.pip [data-role~='netease-player__body'] {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-	inset: 0;
-	justify-content: flex-end;
-	opacity: 0;
-	padding: 12px 14px;
-	pointer-events: none;
-	position: absolute;
-	transition: opacity 0.16s var(--ease);
-}
+	[data-role~='netease-player__body'] {
+		display: flex;
+		gap: 8px;
+		inset: 0;
+		justify-content: flex-end;
+		opacity: 0;
+		padding: 12px 14px;
+		pointer-events: none;
+		position: absolute;
+		transition: opacity 0.16s var(--ease);
+	}
 
-.tn-pane.pip [data-role~='netease-player__body'] > [data-role~='netease-player__button'],
-.tn-pane.pip [data-role~='netease-player__art'],
-.tn-pane.pip [data-role~='netease-player__album'],
-.tn-pane.pip [data-role~='netease-player__volume'],
-.tn-pane.pip [data-role~='netease-player__hints'],
-.tn-pane.pip [data-role~='netease-player__dock'] {
-	display: none;
-}
 
-.tn-pane.pip [data-role~='netease-player__hero'] {
-	gap: 0;
-}
-.tn-pane.pip [data-role~='netease-player__meta'] {
-	gap: 1px;
-}
-.tn-pane.pip [data-role~='netease-player__title'] {
-	font-size: 1.05em;
-	font-weight: 700;
-	line-height: 1.25;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-.tn-pane.pip [data-role~='netease-player__artist'] {
-	font-size: 0.9em;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
+	[data-role~='netease-player__art'],
+	[data-role~='netease-player__album'],
+	[data-role~='netease-player__volume'] {
+		display: none;
+	}
 
-.tn-pane.pip [data-role~='netease-player'] .sf-text {
-	color: #fff;
-	font-weight: 500;
-}
-.tn-pane.pip [data-role~='netease-player'] .sf-t-strong {
-	color: #fff;
-	font-weight: 700;
-}
-.tn-pane.pip [data-role~='netease-player'] .sf-t-muted {
-	color: rgb(255 255 255 / 86%);
-}
+	[data-role~='netease-player__hero'] {
+		gap: 0;
+	}
+	[data-role~='netease-player__meta'] {
+		gap: 1px;
+	}
+	[data-role~='netease-player__title'] {
+		font-size: 1.05em;
+		font-weight: 700;
+		line-height: 1.25;
+	}
+	[data-role~='netease-player__artist'] {
+		font-size: 0.9em;
+	}
+	[data-role~='netease-player__title'],
+	[data-role~='netease-player__artist'] {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
 
-.tn-pane.pip [data-role~='netease-player__controls'] {
-	gap: 20px;
-	justify-content: center;
-}
-.tn-pane.pip [data-role~='netease-player__button'] {
-	--netease-button-hover-background: rgb(255 255 255 / 18%);
-	--netease-button-hover-color: #fff;
-	color: rgb(255 255 255 / 88%);
-}
-.tn-pane.pip [data-role~='netease-player__button--play'] {
-	--netease-button-hover-background: #fff;
-	--netease-button-hover-color: #000;
-	--netease-play-size: 36px;
-	background: #fff;
-	color: #000;
+	[data-role~='netease-player'] {
+		.sf-text {
+			color: #fff;
+			font-weight: 500;
+		}
+		.sf-t-strong {
+			color: #fff;
+			font-weight: 700;
+		}
+		.sf-t-muted {
+			color: rgb(255 255 255 / 86%);
+		}
+	}
+
+	[data-role~='netease-player__controls'] {
+		gap: 20px;
+		justify-content: center;
+	}
+	[data-role~='netease-player__button'] {
+		--netease-button-hover-background: rgb(255 255 255 / 18%);
+		--netease-button-hover-color: #fff;
+		color: rgb(255 255 255 / 88%);
+	}
+	[data-role~='netease-player__button--play'] {
+		--netease-button-hover-background: #fff;
+		--netease-button-hover-color: #000;
+		--netease-play-size: 36px;
+		background: #fff;
+		color: #000;
+	}
 }
 
 /* The pointer anywhere on the pane brings the details back. */
-.tn-pane.pip [data-role~='netease-player']:hover [data-role~='netease-player__scrim'],
-.tn-pane.pip [data-role~='netease-player']:hover [data-role~='netease-player__body'] {
+.tn-pane.pip [data-surface='plugin.netease.player']:hover [data-role~='netease-player__scrim'],
+.tn-pane.pip [data-surface='plugin.netease.player']:hover [data-role~='netease-player__body'] {
 	opacity: 1;
 }
 
-.tn-pane.pip [data-role~='netease-player']:hover [data-role~='netease-player__body'] {
+.tn-pane.pip [data-surface='plugin.netease.player']:hover [data-role~='netease-player__body'] {
 	pointer-events: auto;
 }

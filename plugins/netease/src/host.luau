@@ -38,6 +38,7 @@ local meta: { [string]: Meta } = {}
 local optimistic: { [string]: { value: any, expires: number } } = {}
 local sent: { [string]: number } = {}
 local last_ack: string? = nil
+local flash: { text: string, expires: number }? = nil
 local loop: TimerHandle? = nil
 
 local function value(field: string, actual: any): any
@@ -233,8 +234,8 @@ local function expect(field: string, expected: any)
 	optimistic[field] = { value = expected, expires = tern.now() + OPTIMISTIC_MS }
 end
 
-local function say(block: Block, text: string)
-	block.context:toast("info", "NetEase", text)
+local function say(text: string)
+	flash = { text = text, expires = tern.now() + FLASH_MS }
 end
 
 local function toggle(block: Block)
@@ -257,7 +258,7 @@ end
 local function set_volume(block: Block, level: number)
 	local player = current_player
 	if not (player and player.can.volume) then
-		say(block, no_volume(player))
+		say(no_volume(player))
 		return
 	end
 	level = math.clamp(math.floor(level + 0.5), 0, 100)
@@ -285,6 +286,7 @@ local function signature(): string
 	local parts = {
 		tostring(if player then player.seq else -1),
 		status(),
+		if flash then flash.text else "",
 	}
 	local entry = if player then meta_for(player) else nil
 	table.insert(parts, tostring(if entry then entry.album or "" else ""))
@@ -318,6 +320,9 @@ local function tick()
 		report(latest)
 	elseif latest and current_player == nil then
 		current_player = latest
+	end
+	if flash and tern.now() > flash.expires then
+		flash = nil
 	end
 
 	local render_signature = signature()
@@ -363,6 +368,23 @@ local function button(key: string, icon: string, act: string, enabled: boolean, 
 	return with(ui.row(kids), props)
 end
 
+local function cell_bar(key: string, role: string, count: number, fill: number, act: string?): Node
+	local cells: { Node } = {}
+	local lit_cells = math.floor(fill * count + 0.5)
+	for i = 1, count do
+		local props: { [string]: any } = {
+			key = i,
+			role = "netease-player__cell netease-u-interactive",
+			tone = if i <= lit_cells then "accent" else nil,
+		}
+		if act then
+			props.actions = { click = act .. "=" .. tostring(i) }
+		end
+		cells[i] = with(ui.text(""), props)
+	end
+	return with(ui.row(cells), { key = key, role = role })
+end
+
 local function message(head: string, body: string, buttons: { Node }, tone: string?): Node
 	local children: { Node } = { ui.md(body) }
 	if #buttons > 0 then
@@ -377,6 +399,34 @@ local function text_button(key: string, label: string, act: string, tone: string
 		role = "netease-player__link netease-u-interactive",
 		actions = { click = act },
 	})
+end
+
+local function hints(): Node
+	local items: { { string } } = {
+		{ "space", "play" },
+		{ "n p", "track" },
+		{ "+ -", "volume" },
+		{ "m", "mute" },
+		{ "o", "open" },
+	}
+	local spans: { Span } = {}
+	for index, item in items do
+		if index > 1 then
+			table.insert(spans, ui.span("  ", "dim"))
+		end
+		table.insert(spans, ui.span(item[1], "key"))
+		table.insert(spans, ui.span(" " .. item[2], "dim"))
+	end
+	return with(ui.text(spans), { key = "hints", role = "netease-player__hints" })
+end
+
+local function dock(): Node
+	local lines: { Node } = {}
+	if flash then
+		table.insert(lines, with(ui.text({ ui.span(flash.text, "muted") }), { key = "status" }))
+	end
+	table.insert(lines, hints())
+	return with(ui.col(lines), { role = "netease-player__dock" })
 end
 
 local function controls_row(player: Player): Node
@@ -400,7 +450,8 @@ local function cover(block: Block, player: Player, key: string, role: string, cl
 	return with(ui.node("icon", { name = "wave" }), { key = key, role = role .. " netease-player__cover--empty" })
 end
 
-local function now_playing(block: Block, player: Player, _context: BlockCx): Node
+local function now_playing(block: Block, player: Player, context: BlockCx): Node
+	local narrow = context.cols < 56
 	local entry = meta_for(player)
 	local facts: { string } = {}
 	if entry and entry.album and entry.album ~= "" then
@@ -423,16 +474,44 @@ local function now_playing(block: Block, player: Player, _context: BlockCx): Nod
 		)
 	end
 
+	local hero = with(if narrow
+		then ui.col({
+			cover(block, player, "netease.art", "netease-player__cover netease-player__art", true),
+			with(ui.col(meta_kids), { key = "meta", role = "netease-player__meta" }),
+		})
+		else ui.row({
+			cover(block, player, "netease.art", "netease-player__cover netease-player__art", true),
+			with(ui.col(meta_kids), { key = "meta", role = "netease-player__meta" }),
+		}), {
+		key = "hero",
+		role = if narrow then "netease-player__hero netease-player__hero--narrow" else "netease-player__hero",
+	})
+
+	local level = value("volume", player.volume)
 	local muted = value("muted", player.muted) == true
+	local volume_kids: { Node } = {
+		button("mute", if muted then "slash-circle" else "wave", "mute", player.can.mute, muted),
+	}
+	if player.can.volume and level then
+		table.insert(
+			volume_kids,
+			cell_bar("level", "netease-player__bar netease-player__bar--volume", 20, if muted then 0 else level / 100, "volume")
+		)
+		table.insert(volume_kids, with(ui.text({ ui.span(if muted then "muted" else tostring(level) .. "%", "muted") }), {
+			key = "pct",
+			role = "netease-player__time",
+		}))
+	else
+		table.insert(volume_kids, with(ui.text({ ui.span(no_volume(player), "dim") }), { key = "pct" }))
+	end
 
 	return with(ui.col({
 		cover(block, player, "netease.backdrop", "netease-player__cover netease-player__backdrop", false),
 		with(ui.col({ ui.text(" ") }), { key = "scrim", role = "netease-player__scrim" }),
-		with(ui.row({
-			cover(block, player, "netease.art", "netease-player__cover netease-player__art", true),
-			with(ui.col(meta_kids), { key = "meta", role = "netease-player__meta" }),
-			button("mute", if muted then "slash-circle" else "wave", "mute", player.can.mute, muted),
+		with(ui.col({
+			hero,
 			controls_row(player),
+			with(ui.row(volume_kids), { key = "volume", role = "netease-player__volume" }),
 		}), { key = "body", role = "netease-player__body" }),
 	}), { key = "player", role = "netease-player" })
 end
@@ -465,6 +544,7 @@ local function view(block: Block, context: BlockCx): BlockView
 	end
 	return {
 		main = with(ui.col({ main }), { role = "netease-player__main" }),
+		dock = dock(),
 	}
 end
 
