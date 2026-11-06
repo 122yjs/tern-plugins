@@ -1,120 +1,96 @@
-/* The docked player: one centered column — cover and title, transport, volume. */
-[data-surface='plugin.netease.player'] {
-	--netease-cover: 104px;
+/* The docked player: one centred rail — cover, title, volume, transport. It wraps on
+   narrow panes instead of breaking. */
+[data-role~='netease-player'] {
+	--netease-cover: 4.5em;
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	justify-content: center;
+	margin: 0 auto;
+	max-width: 720px;
+	padding: 10px 12px;
+	width: 100%;
+}
 
-	/* centre the whole player in the pane, whatever its size */
-	&.sf-main,
-	[data-role~='netease-player__main'] {
-		display: flex;
-		flex: 1 1 auto;
-		flex-direction: column;
-		justify-content: center;
-		min-height: 0;
-		overflow: hidden;
-	}
+[data-role~='netease-player__body'] {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px 14px;
+	justify-content: center;
+	width: 100%;
+}
 
-	[data-role~='netease-player'] {
-		align-items: center;
-		display: flex;
-		flex-direction: column;
-		gap: 20px;
-		height: 100%;
-		justify-content: center;
-		margin: 0 auto;
-		max-width: 440px;
-		padding: 16px;
-		width: 100%;
-	}
+[data-role~='netease-player__art'] {
+	border-radius: 8px;
+	box-shadow: 0 8px 20px rgb(0 0 0 / 22%);
+	cursor: pointer;
+	flex: none;
+	height: var(--netease-cover);
+	width: var(--netease-cover);
+}
+[data-role~='netease-player__art'] .sf-img-frame {
+	border-radius: 8px;
+	height: 100%;
+	width: 100%;
+}
+[data-role~='netease-player__art'] .sf-img {
+	height: 100%;
+	object-fit: cover;
+	width: 100%;
+}
+[data-role~='netease-player__art'][data-role~='netease-player__cover--empty'] {
+	background: var(--sf-shade);
+	color: var(--t4);
+	display: grid;
+	place-items: center;
 
-	[data-role~='netease-player__body'] {
-		align-items: center;
-		display: flex;
-		flex-direction: column;
-		gap: 18px;
-		width: 100%;
-	}
-
-	[data-role~='netease-player__hero'] {
-		align-items: center;
-		display: flex;
-		gap: 16px;
-		justify-content: center;
-		min-width: 0;
-		width: 100%;
-	}
-	[data-role~='netease-player__hero--narrow'] {
-		align-items: center;
-		flex-direction: column;
-		gap: 12px;
-	}
-
-	[data-role~='netease-player__art'] {
-		border-radius: 10px;
-		box-shadow: 0 12px 28px rgb(0 0 0 / 24%);
-		cursor: pointer;
-		flex: none;
-		height: var(--netease-cover);
-		width: var(--netease-cover);
-	}
-	[data-role~='netease-player__art'] .sf-img-frame {
-		border-radius: 10px;
-		height: 100%;
-		width: 100%;
-	}
-	[data-role~='netease-player__art'] .sf-img {
-		height: 100%;
-		object-fit: cover;
-		background-position: center;
-		background-size: cover;
-		width: 100%;
-	}
-	[data-role~='netease-player__art'][data-role~='netease-player__cover--empty'] {
-		background: var(--sf-shade);
-		color: var(--t4);
-		display: grid;
-		place-items: center;
-
-		.ico {
-			height: 32px;
-			width: 32px;
-		}
-	}
-
-	[data-role~='netease-player__backdrop'],
-	[data-role~='netease-player__scrim'] {
-		display: none;
-	}
-
-	[data-role~='netease-player__meta'] {
-		display: flex;
-		flex-direction: column;
-		gap: 3px;
-		min-width: 0;
-	}
-	[data-role~='netease-player__title'] {
-		font-size: 1.25em;
-		font-weight: 650;
-		line-height: 1.3;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-	[data-role~='netease-player__artist'],
-	[data-role~='netease-player__album'] {
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-	[data-role~='netease-player__album'] {
-		font-size: 0.9em;
-	}
-	[data-role~='netease-player__hints'] {
-		font-size: 0.85em;
-		text-align: center;
-	}
-	[data-role~='netease-player__dock'] {
-		align-items: center;
-		gap: 4px;
-		width: 100%;
+	.ico {
+		height: 24px;
+		width: 24px;
 	}
 }
+
+[data-role~='netease-player__backdrop'],
+[data-role~='netease-player__scrim'] {
+	display: none;
+}
+
+[data-role~='netease-player__meta'] {
+	display: flex;
+	flex: 1 1 160px;
+	flex-direction: column;
+	gap: 1px;
+	min-width: 0;
+}
+[data-role~='netease-player__title'] {
+	font-size: 1.05em;
+	font-weight: 650;
+	line-height: 1.3;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+[data-role~='netease-player__artist'],
+[data-role~='netease-player__album'] {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+[data-role~='netease-player__album'] {
+	font-size: 0.85em;
+}
+[data-role~='netease-player__volume'] {
+	flex: 0 1 240px;
+}
+[data-role~='netease-player__hints'] {
+	font-size: 0.85em;
+	text-align: center;
+}
+[data-role~='netease-player__dock'] {
+	align-items: center;
+	gap: 4px;
+	width: 100%;
+}
+

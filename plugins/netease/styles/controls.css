@@ -1,125 +1,124 @@
-[data-surface='plugin.netease.player'] {
-	--netease-button-icon: 18px;
-	--netease-play-icon: 20px;
-	--netease-play-size: 44px;
+[data-role~='netease-player'] {
+	--netease-button-icon: 1.05em;
+	--netease-play-icon: 1.15em;
+	--netease-play-size: 2.5em;
+}
 
-	[data-role~='netease-player__controls'] {
-		align-items: center;
-		display: flex;
-		gap: 28px;
-		justify-content: center;
-		width: 100%;
-	}
+[data-role~='netease-player__controls'] {
+	align-items: center;
+	display: flex;
+	flex: none;
+	gap: 12px;
+	justify-content: center;
+	width: auto;
+}
 
-	[data-role~='netease-player__volume'] {
-		align-items: center;
-		display: flex;
-		gap: 10px;
-		justify-content: center;
-		margin: 0 auto;
-		max-width: 300px;
-		width: 100%;
-	}
+[data-role~='netease-player__volume'] {
+	align-items: center;
+	display: flex;
+	gap: 10px;
+	justify-content: center;
+	width: 100%;
+}
 
-	[data-role~='netease-player__bar'] {
-		align-items: center;
-		display: flex;
-		flex: 1 1 auto;
-		gap: 0;
-		height: 16px;
-	}
-	[data-role~='netease-player__bar--volume'] {
-		min-width: 120px;
-	}
-	[data-role~='netease-player__cell'] {
-		background: var(--l2);
-		cursor: pointer;
-		flex: 1 1 0;
-		height: 4px;
-		min-width: 0;
-		transition: height 0.12s var(--ease);
+[data-role~='netease-player__bar'] {
+	align-items: center;
+	display: flex;
+	flex: 1 1 auto;
+	gap: 0;
+	height: 16px;
+}
+[data-role~='netease-player__bar--volume'] {
+	min-width: 120px;
+}
+[data-role~='netease-player__cell'] {
+	background: var(--l2);
+	cursor: pointer;
+	flex: 1 1 0;
+	height: 4px;
+	min-width: 0;
+	transition: height 0.12s var(--ease);
 
-		&[data-tone='accent'] {
-			background: var(--accent);
-		}
-		&:first-child {
-			border-radius: 2px 0 0 2px;
-		}
-		&:last-child {
-			border-radius: 0 2px 2px 0;
-		}
-	}
-	[data-role~='netease-player__bar']:hover [data-role~='netease-player__cell'] {
-		height: 7px;
-	}
-	[data-role~='netease-player__time'] {
-		flex: none;
-		font-variant-numeric: tabular-nums;
-		font-weight: 500;
-		min-width: 40px;
-		text-align: end;
-	}
-
-	[data-role~='netease-player__button'] {
-		--netease-button-hover-background: var(--sf-shade);
-		--netease-button-hover-color: var(--t1);
-		align-items: center;
-		border-radius: 999px;
-		color: var(--t2);
-		cursor: pointer;
-		display: inline-flex;
-		flex: none;
-		justify-content: center;
-		padding: 8px;
-		transition:
-			background 0.12s var(--ease),
-			color 0.12s var(--ease),
-			transform 0.08s var(--ease);
-
-		&:hover {
-			background: var(--netease-button-hover-background);
-			color: var(--netease-button-hover-color);
-		}
-		&:active {
-			transform: scale(0.92);
-		}
-		&[data-tone='accent'] {
-			color: var(--accent);
-		}
-		&[data-tone='muted'] {
-			cursor: default;
-			opacity: 0.35;
-		}
-		.sf-icon,
-		.ico {
-			height: var(--netease-button-icon);
-			width: var(--netease-button-icon);
-		}
-		> * {
-			pointer-events: none;
-		}
-	}
-	[data-role~='netease-player__button--play'] {
-		--netease-button-hover-background: var(--accent);
-		--netease-button-hover-color: #fff;
+	&[data-tone='accent'] {
 		background: var(--accent);
-		color: #fff;
-		height: var(--netease-play-size);
-		padding: 0;
-		width: var(--netease-play-size);
-
-		&:hover {
-			box-shadow: 0 0 0 4px rgb(from var(--accent) r g b / 22%);
-		}
-		.sf-icon,
-		.ico {
-			height: var(--netease-play-icon);
-			width: var(--netease-play-icon);
-		}
 	}
-
-	/* a click should reach the control instead of only enlarging the pane */
-	[data-role~='netease-u-interactive'] {
-		pointer-events: auto;
+	&:first-child {
+		border-radius: 2px 0 0 2px;
 	}
+	&:last-child {
+		border-radius: 0 2px 2px 0;
+	}
+}
+[data-role~='netease-player__bar']:hover [data-role~='netease-player__cell'] {
+	height: 7px;
+}
+[data-role~='netease-player__time'] {
+	flex: none;
+	font-variant-numeric: tabular-nums;
+	font-weight: 500;
+	min-width: 40px;
+	text-align: end;
+}
+
+[data-role~='netease-player__button'] {
+	--netease-button-hover-background: var(--sf-shade);
+	--netease-button-hover-color: var(--t1);
+	align-items: center;
+	border-radius: 999px;
+	color: var(--t2);
+	cursor: pointer;
+	display: inline-flex;
+	flex: none;
+	justify-content: center;
+	padding: 4px;
+	transition:
+		background 0.12s var(--ease),
+		color 0.12s var(--ease),
+		transform 0.08s var(--ease);
+
+	&:hover {
+		background: var(--netease-button-hover-background);
+		color: var(--netease-button-hover-color);
+	}
+	&:active {
+		transform: scale(0.92);
+	}
+	&[data-tone='accent'] {
+		color: var(--accent);
+	}
+	&[data-tone='muted'] {
+		cursor: default;
+		opacity: 0.35;
+	}
+	.sf-icon,
+	.ico {
+		height: var(--netease-button-icon);
+		width: var(--netease-button-icon);
+	}
+	> * {
+		pointer-events: none;
+	}
+}
+[data-role~='netease-player__button--play'] {
+	--netease-button-hover-background: var(--accent);
+	--netease-button-hover-color: #fff;
+	background: var(--accent);
+	color: #fff;
+	height: var(--netease-play-size);
+	padding: 0;
+	width: var(--netease-play-size);
+
+	&:hover {
+		box-shadow: 0 0 0 4px rgb(from var(--accent) r g b / 22%);
+	}
+	.sf-icon,
+	.ico {
+		height: var(--netease-play-icon);
+		width: var(--netease-play-icon);
+	}
+}
+
+/* a click should reach the control instead of only enlarging the pane */
+[data-role~='netease-u-interactive'] {
+	pointer-events: auto;
 }
