@@ -7,6 +7,7 @@ A small collection of plugins for [Tern](https://stencil.so/tern), Stencil's Rus
 | Plugin | What it does | Status |
 | --- | --- | --- |
 | [Agent Sessions](plugins/agent-sessions/README.md) | Browse local Claude Code, Antigravity, Pi and omp session histories in a native canvas, resume them in one click, and tag them without touching the session files. | Available |
+| [NetEase](plugins/netease/README.md) | Now playing, cover art, play/pause, next and previous, and the app's own volume for the NetEase Cloud Music desktop client. No login. | Available (Windows) |
 
 ## Install
 

@@ -1,0 +1,149 @@
+.tn-pane.pip [data-surface='plugin.netease.player'] {
+	&.sf-dock {
+		display: none;
+	}
+	&.sf-main {
+		flex: 1 1 auto;
+		height: auto;
+		margin: -10px;
+		max-height: none;
+		overflow: hidden;
+		padding: 0;
+	}
+	[data-role~='netease-player'] {
+		color: #fff;
+		font-family: var(--sans);
+		gap: 4px;
+		height: 100%;
+		justify-content: flex-end;
+		max-width: none;
+		overflow: hidden;
+		padding-bottom: 10px;
+		padding-left: 14px;
+		padding-right: 14px;
+		padding-top: 0;
+		position: relative;
+	}
+	[data-role~='netease-player__scrim'] {
+		background: linear-gradient(rgb(0 0 0 / 0%), rgb(0 0 0 / 62%) 30%, rgb(0 0 0 / 86%));
+		bottom: 0;
+		display: flex;
+		left: 0;
+		pointer-events: none;
+		position: absolute;
+		right: 0;
+		top: 34%;
+	}
+	[data-role~='netease-player__hero'],
+	[data-role~='netease-player__progress'],
+	[data-role~='netease-player__controls'] {
+		position: relative;
+	}
+	[data-role~='netease-player__backdrop'] {
+		display: block;
+		left: 0;
+		pointer-events: none;
+		position: absolute;
+		right: 0;
+		top: 50%;
+		transform: translateY(-50%);
+
+		.sf-img,
+		.sf-img-frame {
+			border-radius: 0;
+			box-shadow: none;
+			height: auto;
+			max-width: none;
+			width: 100%;
+		}
+		&[data-role~='netease-player__cover--empty'] {
+			bottom: 0;
+			display: grid;
+			top: 0;
+			transform: none;
+		}
+	}
+	[data-role~='netease-player__art'],
+	[data-role~='netease-player__album'],
+	[data-role~='netease-player__lower'] {
+		display: none;
+	}
+	[data-role~='netease-player__hero'] {
+		gap: 0;
+	}
+	[data-role~='netease-player__meta'] {
+		gap: 1px;
+	}
+	[data-role~='netease-player__title'] {
+		font-size: 1.2em;
+		font-weight: 700;
+		line-height: 1.2;
+	}
+	[data-role~='netease-player__artist'] {
+		font-size: 0.95em;
+	}
+	[data-role~='netease-player__title'],
+	[data-role~='netease-player__artist'] {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	[data-role~='netease-player'] {
+		.sf-text {
+			color: #fff;
+			font-family: var(--sans);
+			font-weight: 500;
+		}
+		.sf-t-strong {
+			color: #fff;
+			font-weight: 700;
+		}
+		[data-role~='netease-player__artist'].sf-text {
+			color: rgb(255 255 255 / 90%);
+			font-weight: 600;
+		}
+		.sf-t-muted {
+			color: rgb(255 255 255 / 88%);
+			font-weight: 600;
+		}
+	}
+	[data-role~='netease-player__progress'] {
+		font-size: 0.85em;
+		gap: 6px;
+	}
+	[data-role~='netease-player__time'] {
+		min-width: 30px;
+	}
+	[data-role~='netease-player__cell'] {
+		background: rgb(255 255 255 / 28%);
+
+		&[data-tone='accent'] {
+			background: #fff;
+		}
+	}
+	[data-role~='netease-player__controls'] {
+		gap: 4px;
+		justify-content: space-between;
+	}
+	[data-role~='netease-player__button'] {
+		--netease-button-hover-background: rgb(255 255 255 / 16%);
+		--netease-button-hover-color: #fff;
+		color: rgb(255 255 255 / 85%);
+
+		&:hover {
+			background: var(--netease-button-hover-background);
+			color: var(--netease-button-hover-color);
+		}
+		&[data-tone='accent'] {
+			background: rgb(255 255 255 / 22%);
+			color: #fff;
+		}
+	}
+	[data-role~='netease-player__button--play'] {
+		--netease-button-hover-background: #fff;
+		--netease-button-hover-color: #000;
+		--netease-play-size: 36px;
+		background: #fff;
+		color: #000;
+	}
+}
