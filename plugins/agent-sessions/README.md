@@ -2,11 +2,13 @@
 
 A Tern canvas that turns the agent histories already on your machine into one searchable, resumable list.
 
-![Agent Sessions list](docs/session-manager.png)
+<p align="center">
+  <img src="docs/session-manager.png" alt="Agent Sessions list" height="460" />
+  &nbsp;&nbsp;
+  <img src="docs/session-detail.png" alt="Session detail" height="460" />
+</p>
 
 Claude Code, Antigravity, Pi and omp each keep conversations in their own format and directory. Finding the one you want means remembering which tool, which project and which UUID. This plugin reads those stores, groups the sessions by agent, folder or tag, and resumes one with a click.
-
-![Session detail](docs/session-detail.png)
 
 ## Features
 

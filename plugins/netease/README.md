@@ -4,10 +4,16 @@ Control the [NetEase Cloud Music](https://music.163.com/) (网易云音乐) desk
 [Tern](https://stencil.so/tern): cover art, the song and artist, play/pause, next and
 previous, plus the app's own volume. No account, no login, no API token.
 
+<p align="center">
+  <img src="docs/OnPanel.png" alt="The docked player" height="300" />
+  &nbsp;&nbsp;
+  <img src="docs/Floating.png" alt="The picture in picture player" height="300" />
+</p>
+
 ## Install
 
 ```sh
-tern plugin install https://github.com/duzui300/tern-plugins
+tern plugin install github.com/duzui300/tern-plugins/plugins/netease
 tern plugin link ~/src/tern-plugins/plugins/netease   # when developing
 tern plugin reload
 ```
