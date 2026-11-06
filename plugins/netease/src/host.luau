@@ -451,30 +451,38 @@ local function cover(block: Block, player: Player, key: string, role: string, cl
 end
 
 local function now_playing(block: Block, player: Player, context: BlockCx): Node
-	local narrow = context.cols < 60
+	local narrow = context.cols < 56
 	local entry = meta_for(player)
+	local facts: { string } = {}
+	if entry and entry.album and entry.album ~= "" then
+		table.insert(facts, entry.album)
+	end
+	if entry and entry.duration then
+		table.insert(facts, netease.clock(entry.duration))
+	end
+
 	local meta_kids: { Node } = {
 		with(ui.text({ ui.span(player.title, "strong") }), { key = "title", role = "netease-player__title" }),
 	}
 	if player.artist ~= "" then
 		table.insert(meta_kids, with(ui.text(player.artist), { key = "artist", role = "netease-player__artist" }))
 	end
-	if entry and entry.album and entry.album ~= "" then
-		table.insert(meta_kids, with(ui.text({ ui.span(entry.album, "muted") }), { key = "album", role = "netease-player__album" }))
+	if #facts > 0 then
+		table.insert(
+			meta_kids,
+			with(ui.text({ ui.span(table.concat(facts, " · "), "muted") }), { key = "album", role = "netease-player__album" })
+		)
 	end
-	if entry and entry.duration then
-		table.insert(meta_kids, with(ui.row({
-			with(ui.badge(netease.clock(entry.duration), "muted"), { key = "len" }),
-			with(ui.badge(if status() == "playing" then "playing" else "paused", if status() == "playing" then "accent" else "muted"), {
-				key = "state",
-			}),
-		}), { key = "facts", role = "netease-player__facts" }))
-	end
-	local hero_kids: { Node } = {
-		cover(block, player, "netease.art", "netease-player__cover netease-player__art", true),
-		with(ui.col(meta_kids), { key = "meta", role = "netease-player__meta" }),
-	}
-	local hero = with(if narrow then ui.col(hero_kids) else ui.row(hero_kids), {
+
+	local hero = with(if narrow
+		then ui.col({
+			cover(block, player, "netease.art", "netease-player__cover netease-player__art", true),
+			with(ui.col(meta_kids), { key = "meta", role = "netease-player__meta" }),
+		})
+		else ui.row({
+			cover(block, player, "netease.art", "netease-player__cover netease-player__art", true),
+			with(ui.col(meta_kids), { key = "meta", role = "netease-player__meta" }),
+		}), {
 		key = "hero",
 		role = if narrow then "netease-player__hero netease-player__hero--narrow" else "netease-player__hero",
 	})
@@ -485,7 +493,10 @@ local function now_playing(block: Block, player: Player, context: BlockCx): Node
 		button("mute", if muted then "slash-circle" else "wave", "mute", player.can.mute, muted),
 	}
 	if player.can.volume and level then
-		table.insert(volume_kids, cell_bar("level", "netease-player__bar netease-player__bar--volume", 20, if muted then 0 else level / 100, "volume"))
+		table.insert(
+			volume_kids,
+			cell_bar("level", "netease-player__bar netease-player__bar--volume", 20, if muted then 0 else level / 100, "volume")
+		)
 		table.insert(volume_kids, with(ui.text({ ui.span(if muted then "muted" else tostring(level) .. "%", "muted") }), {
 			key = "pct",
 			role = "netease-player__time",
@@ -493,19 +504,15 @@ local function now_playing(block: Block, player: Player, context: BlockCx): Node
 	else
 		table.insert(volume_kids, with(ui.text({ ui.span(no_volume(player), "dim") }), { key = "pct" }))
 	end
-	local volume = with(ui.row(volume_kids), { key = "volume", role = "netease-player__volume" })
-
-	local tools = with(ui.row({
-		button("open", "open", "launch", true),
-	}), { key = "tools", role = "netease-player__tools" })
 
 	return with(ui.col({
 		cover(block, player, "netease.backdrop", "netease-player__cover netease-player__backdrop", false),
-		-- Tern hides a node with 0 content
 		with(ui.col({ ui.text(" ") }), { key = "scrim", role = "netease-player__scrim" }),
-		hero,
-		controls_row(player),
-		with(ui.row({ volume, tools }), { key = "lower", role = "netease-player__lower" }),
+		with(ui.col({
+			hero,
+			controls_row(player),
+			with(ui.row(volume_kids), { key = "volume", role = "netease-player__volume" }),
+		}), { key = "body", role = "netease-player__body" }),
 	}), { key = "player", role = "netease-player" })
 end
 

@@ -1,26 +1,63 @@
 [data-surface='plugin.netease.player'] {
 	--netease-button-icon: 18px;
 	--netease-play-icon: 20px;
-	--netease-play-size: 42px;
+	--netease-play-size: 44px;
 
 	[data-role~='netease-player__controls'] {
 		align-items: center;
-		gap: 22px;
+		display: flex;
+		gap: 28px;
 		justify-content: center;
+		width: 100%;
 	}
-	[data-role~='netease-player__lower'] {
-		align-items: center;
-		gap: 16px;
-		justify-content: space-between;
 
-		> [data-role~='netease-player__volume'] {
-			flex: 1 1 auto;
-			min-width: 0;
+	[data-role~='netease-player__volume'] {
+		align-items: center;
+		display: flex;
+		gap: 10px;
+		justify-content: center;
+		margin: 0 auto;
+		max-width: 300px;
+		width: 100%;
+	}
+
+	[data-role~='netease-player__bar'] {
+		align-items: center;
+		display: flex;
+		flex: 1 1 auto;
+		gap: 0;
+		height: 16px;
+	}
+	[data-role~='netease-player__bar--volume'] {
+		min-width: 120px;
+	}
+	[data-role~='netease-player__cell'] {
+		background: var(--l2);
+		cursor: pointer;
+		flex: 1 1 0;
+		height: 4px;
+		min-width: 0;
+		transition: height 0.12s var(--ease);
+
+		&[data-tone='accent'] {
+			background: var(--accent);
+		}
+		&:first-child {
+			border-radius: 2px 0 0 2px;
+		}
+		&:last-child {
+			border-radius: 0 2px 2px 0;
 		}
 	}
-	[data-role~='netease-player__tools'] {
+	[data-role~='netease-player__bar']:hover [data-role~='netease-player__cell'] {
+		height: 7px;
+	}
+	[data-role~='netease-player__time'] {
 		flex: none;
-		gap: 4px;
+		font-variant-numeric: tabular-nums;
+		font-weight: 500;
+		min-width: 40px;
+		text-align: end;
 	}
 
 	[data-role~='netease-player__button'] {
@@ -30,10 +67,10 @@
 		border-radius: 999px;
 		color: var(--t2);
 		cursor: pointer;
+		display: inline-flex;
 		flex: none;
-		gap: 1px;
 		justify-content: center;
-		padding: 6px;
+		padding: 8px;
 		transition:
 			background 0.12s var(--ease),
 			color 0.12s var(--ease),
@@ -58,10 +95,6 @@
 			height: var(--netease-button-icon);
 			width: var(--netease-button-icon);
 		}
-		.sf-text {
-			font-size: 0.75em;
-			line-height: 1;
-		}
 		> * {
 			pointer-events: none;
 		}
@@ -85,7 +118,7 @@
 		}
 	}
 
-	/* ideally tern lets a click go through without enlarging a pip in the future */
+	/* a click should reach the control instead of only enlarging the pane */
 	[data-role~='netease-u-interactive'] {
 		pointer-events: auto;
 	}

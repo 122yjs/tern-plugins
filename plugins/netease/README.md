@@ -15,6 +15,9 @@ tern plugin reload
 Then run **NetEase: Open player** from the palette. The block opens as a picture in
 picture in the corner, like a small always-on-top player.
 
+The picture in picture shows the cover alone; move the pointer over it and the song, the
+artist and the transport appear, and they fade again when the pointer leaves.
+
 Windows only for now: the helper drives `cloudmusic.exe` through its global hotkeys and
 the Windows audio mixer. macOS and Linux would need their own helper (see
 [Limitations](#limitations)).

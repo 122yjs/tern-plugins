@@ -1,7 +1,5 @@
+/* Picture in picture: the cover alone, and the details only while the pointer is over it. */
 .tn-pane.pip [data-surface='plugin.netease.player'] {
-	&.sf-dock {
-		display: none;
-	}
 	&.sf-main {
 		flex: 1 1 auto;
 		height: auto;
@@ -9,65 +7,74 @@
 		max-height: none;
 		overflow: hidden;
 		padding: 0;
+		position: relative;
 	}
+	&.sf-dock {
+		display: none;
+	}
+
 	[data-role~='netease-player'] {
-		color: #fff;
-		font-family: var(--sans);
-		gap: 4px;
-		height: 100%;
-		justify-content: flex-end;
+		display: block;
+		inset: 0;
+		margin: 0;
 		max-width: none;
-		overflow: hidden;
-		padding-bottom: 10px;
-		padding-left: 14px;
-		padding-right: 14px;
-		padding-top: 0;
-		position: relative;
-	}
-	[data-role~='netease-player__scrim'] {
-		background: linear-gradient(rgb(0 0 0 / 0%), rgb(0 0 0 / 62%) 30%, rgb(0 0 0 / 86%));
-		bottom: 0;
-		display: flex;
-		left: 0;
-		pointer-events: none;
+		padding: 0;
 		position: absolute;
-		right: 0;
-		top: 34%;
+		width: 100%;
 	}
-	[data-role~='netease-player__hero'],
-	[data-role~='netease-player__progress'],
-	[data-role~='netease-player__controls'] {
-		position: relative;
-	}
+
 	[data-role~='netease-player__backdrop'] {
 		display: block;
-		left: 0;
-		pointer-events: none;
+		inset: 0;
 		position: absolute;
-		right: 0;
-		top: 50%;
-		transform: translateY(-50%);
 
 		.sf-img,
 		.sf-img-frame {
 			border-radius: 0;
 			box-shadow: none;
-			height: auto;
+			height: 100%;
 			max-width: none;
+			object-fit: cover;
+			background-position: center;
+			background-size: cover;
 			width: 100%;
 		}
-		&[data-role~='netease-player__cover--empty'] {
-			bottom: 0;
-			display: grid;
-			top: 0;
-			transform: none;
-		}
 	}
+	[data-role~='netease-player__backdrop'][data-role~='netease-player__cover--empty'] {
+		background: var(--sf-shade);
+		display: grid;
+		place-items: center;
+	}
+
+	[data-role~='netease-player__scrim'] {
+		background: linear-gradient(rgb(0 0 0 / 0%), rgb(0 0 0 / 50%) 45%, rgb(0 0 0 / 82%));
+		display: block;
+		inset: 0;
+		opacity: 0;
+		pointer-events: none;
+		position: absolute;
+		transition: opacity 0.16s var(--ease);
+	}
+
+	[data-role~='netease-player__body'] {
+		display: flex;
+		gap: 8px;
+		inset: 0;
+		justify-content: flex-end;
+		opacity: 0;
+		padding: 12px 14px;
+		pointer-events: none;
+		position: absolute;
+		transition: opacity 0.16s var(--ease);
+	}
+
+
 	[data-role~='netease-player__art'],
 	[data-role~='netease-player__album'],
-	[data-role~='netease-player__lower'] {
+	[data-role~='netease-player__volume'] {
 		display: none;
 	}
+
 	[data-role~='netease-player__hero'] {
 		gap: 0;
 	}
@@ -75,12 +82,12 @@
 		gap: 1px;
 	}
 	[data-role~='netease-player__title'] {
-		font-size: 1.2em;
+		font-size: 1.05em;
 		font-weight: 700;
-		line-height: 1.2;
+		line-height: 1.25;
 	}
 	[data-role~='netease-player__artist'] {
-		font-size: 0.95em;
+		font-size: 0.9em;
 	}
 	[data-role~='netease-player__title'],
 	[data-role~='netease-player__artist'] {
@@ -88,56 +95,29 @@
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
+
 	[data-role~='netease-player'] {
 		.sf-text {
 			color: #fff;
-			font-family: var(--sans);
 			font-weight: 500;
 		}
 		.sf-t-strong {
 			color: #fff;
 			font-weight: 700;
 		}
-		[data-role~='netease-player__artist'].sf-text {
-			color: rgb(255 255 255 / 90%);
-			font-weight: 600;
-		}
 		.sf-t-muted {
-			color: rgb(255 255 255 / 88%);
-			font-weight: 600;
+			color: rgb(255 255 255 / 86%);
 		}
 	}
-	[data-role~='netease-player__progress'] {
-		font-size: 0.85em;
-		gap: 6px;
-	}
-	[data-role~='netease-player__time'] {
-		min-width: 30px;
-	}
-	[data-role~='netease-player__cell'] {
-		background: rgb(255 255 255 / 28%);
 
-		&[data-tone='accent'] {
-			background: #fff;
-		}
-	}
 	[data-role~='netease-player__controls'] {
-		gap: 4px;
-		justify-content: space-between;
+		gap: 20px;
+		justify-content: center;
 	}
 	[data-role~='netease-player__button'] {
-		--netease-button-hover-background: rgb(255 255 255 / 16%);
+		--netease-button-hover-background: rgb(255 255 255 / 18%);
 		--netease-button-hover-color: #fff;
-		color: rgb(255 255 255 / 85%);
-
-		&:hover {
-			background: var(--netease-button-hover-background);
-			color: var(--netease-button-hover-color);
-		}
-		&[data-tone='accent'] {
-			background: rgb(255 255 255 / 22%);
-			color: #fff;
-		}
+		color: rgb(255 255 255 / 88%);
 	}
 	[data-role~='netease-player__button--play'] {
 		--netease-button-hover-background: #fff;
@@ -146,4 +126,14 @@
 		background: #fff;
 		color: #000;
 	}
+}
+
+/* The pointer anywhere on the pane brings the details back. */
+.tn-pane.pip [data-surface='plugin.netease.player']:hover [data-role~='netease-player__scrim'],
+.tn-pane.pip [data-surface='plugin.netease.player']:hover [data-role~='netease-player__body'] {
+	opacity: 1;
+}
+
+.tn-pane.pip [data-surface='plugin.netease.player']:hover [data-role~='netease-player__body'] {
+	pointer-events: auto;
 }
