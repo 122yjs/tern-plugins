@@ -104,8 +104,45 @@ local function short_meta(s)
 	return cut_chars(table.concat(bits, "  "), 34)
 end
 
+local function resolve_executable(name)
+	local windows = tern.runtime.os == "windows"
+	local bin = if windows and not name:match("%.exe$") then name .. ".exe" else name
+	local candidates = {}
+	for dir in (tern.getenv("PATH") or ""):gmatch(if windows then "[^;]+" else "[^:]+") do
+		if dir ~= "" then
+			candidates[#candidates + 1] = dir .. "/" .. bin
+		end
+	end
+	local home = tern.getenv("HOME") or tern.getenv("USERPROFILE")
+	if home and not windows then
+		candidates[#candidates + 1] = home .. "/.local/bin/" .. bin
+		candidates[#candidates + 1] = home .. "/.local/share/tern-agents-ui/bin/" .. bin
+		candidates[#candidates + 1] = "/opt/homebrew/bin/" .. bin
+		candidates[#candidates + 1] = "/usr/local/bin/" .. bin
+	end
+	for _, path in ipairs(candidates) do
+		local ok, exists = pcall(tern.fs.exists, path)
+		if ok and exists then return path end
+	end
+	return nil
+end
+
+local function quote_arg(s)
+	if not s:find("[^%w_%-%.%/]") then return s end
+	return "'" .. s:gsub("'", "'\\''") .. "'"
+end
+
 local function resume_cmd(s)
-	if s.agent == "claude" then return "claude --resume " .. s.id end
+	if s.agent == "claude" then
+		local tclaude = resolve_executable("tclaude")
+		if tclaude then return quote_arg(tclaude) .. " -resume " .. s.id end
+		return "claude --resume " .. s.id
+	end
+	if s.agent == "codex" then
+		local tcodex = resolve_executable("tcodex")
+		if tcodex then return quote_arg(tcodex) .. " -resume " .. s.id end
+		return "codex resume " .. s.id
+	end
 	if s.agent == "pi" then return "pi --session " .. s.id end
 	if s.agent == "omp" then return "omp --resume " .. s.id end
 	if s.agent == "antigravity" then return "agy --conversation " .. s.id end
@@ -339,7 +376,8 @@ local function render(cx)
 end
 
 local function run_node(argv, timeout, cb)
-	local full = { "node", DIR .. "/" .. argv[1] }
+	local node = resolve_executable("node") or "node"
+	local full = { node, DIR .. "/" .. argv[1] }
 	for i = 2, #argv do
 		full[#full + 1] = argv[i]
 	end
