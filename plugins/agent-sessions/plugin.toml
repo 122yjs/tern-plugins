@@ -1,6 +1,6 @@
 schema = 1
 id = "agent-sessions"
 name = "Agent Sessions"
-version = "0.1.0"
-description = "Browse Claude Code, Antigravity and Pi session histories; resume or copy commands; tag them without touching the session files."
+version = "0.2.0"
+description = "Browse Claude Code, Codex, Antigravity, Pi and omp session histories; resume or copy commands; tag them without touching the session files."
 window = "window.luau"

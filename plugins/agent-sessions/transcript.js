@@ -50,6 +50,15 @@ function claude() {
   }
 }
 
+function codex() {
+  const message = require('./codex').message;
+  for (const line of lines(file)) {
+    let record; try { record = JSON.parse(line); } catch { continue; }
+    const msg = message(record);
+    if (msg) add(msg.role === 'user' ? 'You' : 'Assistant', msg.text);
+  }
+}
+
 function pi() {
   for (const line of lines(file)) {
     if (!line) continue;
@@ -94,6 +103,7 @@ function agy() {
 
 try {
   if (agent === 'claude') claude();
+  else if (agent === 'codex') codex();
   else if (agent === 'pi' || agent === 'omp') pi();
   else if (agent === 'antigravity') agy();
   flush();

@@ -191,6 +191,34 @@ for (const proj of readdir(piBase)) {
   }
 }
 
+// Walk directory entries without following symlinks; Codex nests rollouts by date.
+const codexBase = path.join(process.env.CODEX_HOME || path.join(home, '.codex'), 'sessions');
+const codexMessage = require('./codex').message;
+const pendingCodexDirs = [codexBase];
+while (pendingCodexDirs.length) {
+  const dir = pendingCodexDirs.pop();
+  for (const entry of readdir(dir)) {
+    const p = path.join(dir, entry.name);
+    if (entry.isDirectory()) { pendingCodexDirs.push(p); continue; }
+    if (!entry.isFile() || !entry.name.endsWith('.jsonl')) continue;
+    let id = '', cwd = '', title = '';
+    for (const line of lines(p)) {
+      let o; try { o = JSON.parse(line); } catch { continue; }
+      if (!o || typeof o !== 'object') continue;
+      if (o.type === 'session_meta' && o.payload && typeof o.payload.id === 'string') {
+        id = o.payload.id;
+        cwd = typeof o.payload.cwd === 'string' ? o.payload.cwd : '';
+      }
+      const msg = codexMessage(o);
+      if (!title && msg && msg.role === 'user') title = clean(msg.text);
+    }
+    // The ID is passed to a shell resume command; accept only Codex UUIDs.
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) continue;
+    const st = stat(p);
+    if (st) out.push({ agent: 'codex', id, title: title || '(untitled)', cwd, path: p, time: st.mtimeMs, preview: title });
+  }
+}
+
 const ompBase = path.join(home, '.omp', 'agent', 'sessions');
 for (const proj of readdir(ompBase)) {
   if (!proj.isDirectory()) continue;

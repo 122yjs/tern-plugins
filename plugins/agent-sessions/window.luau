@@ -1,4 +1,4 @@
--- Agent Sessions: browse Claude Code / Antigravity / Pi history.
+-- Agent Sessions: browse Claude Code / Codex / Antigravity / Pi / omp history.
 -- Aliases and tags live in this plugin's own SQLite; session files are never written.
 
 local ui = tern.ui
@@ -19,7 +19,7 @@ local S = {
 	scanning = false,
 }
 
-local AGENT_ORDER = { claude = 1, antigravity = 2, omp = 3, pi = 4 }
+local AGENT_ORDER = { claude = 1, codex = 2, antigravity = 3, omp = 4, pi = 5 }
 
 local function trim(s)
 	return (s or ""):match("^%s*(.-)%s*$")
@@ -259,7 +259,7 @@ local function session_row(s)
 			action_button("copy", "Copy the resume command", "copy:" .. key_of(s)),
 			action_button("pen", "Rename", "rename:" .. key_of(s)),
 			action_button("tag", "Edit tags", "tag:" .. key_of(s)),
-			S.hidden[key_of(s)] and action_button("eye", "Restore to list", "restore:" .. key_of(s)) or action_button("trash", "Hide or delete", "delete:" .. key_of(s)),
+			S.hidden[key_of(s)] and action_button("eye", "Restore to list", "restore:" .. key_of(s)) or action_button("trash", s.agent == "codex" and "Hide from this list" or "Hide or delete", "delete:" .. key_of(s)),
 		}),
 	})
 end
@@ -462,14 +462,14 @@ local function open_dashboard(cx)
 		S.pane = pane
 		cx.layout:focus(pane)
 		pcall(function()
-			cx.canvas:set(pane, { about = "Session history for Claude Code, Antigravity, Pi and omp. Resume or copy a command; aliases and tags live in this plugin's own database and never touch the session files." })
+			cx.canvas:set(pane, { about = "Session history for Claude Code, Codex, Antigravity, Pi and omp. Resume or copy a command; aliases and tags live in this plugin's own database and never touch the session files." })
 		end)
 		refresh(cx)
 		return
 	end
 	local p, err = cx.canvas:open({
 		title = "Agent Sessions",
-		about = "Session history for Claude Code, Antigravity, Pi and omp. Resume or copy a command; aliases and tags live in this plugin's own database and never touch the session files.",
+		about = "Session history for Claude Code, Codex, Antigravity, Pi and omp. Resume or copy a command; aliases and tags live in this plugin's own database and never touch the session files.",
 		view = ui.node("col", { gap = "sm" }, { ui.text("Scanning sessions…") }),
 	})
 	if not p then
@@ -688,6 +688,11 @@ local function confirm_delete(cx, s)
 end
 
 local function delete_session(cx, s)
+	-- Codex has indexes and other state beyond its rollout; only hiding is supported.
+	if s.agent == "codex" then
+		hide_session(cx, s)
+		return
+	end
 	cx:pick({ items = {
 		{ label = "Hide from this list", detail = "keeps the session files" },
 		{ label = "Delete from disk…", detail = "permanent, cannot be undone" },

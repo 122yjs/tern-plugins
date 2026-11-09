@@ -8,11 +8,11 @@ A Tern canvas that turns the agent histories already on your machine into one se
   <img src="docs/session-detail.png" alt="Session detail" height="460" />
 </p>
 
-Claude Code, Antigravity, Pi and omp each keep conversations in their own format and directory. Finding the one you want means remembering which tool, which project and which UUID. This plugin reads those stores, groups the sessions by agent, folder or tag, and resumes one with a click.
+Claude Code, Codex, Antigravity, Pi and omp each keep conversations in their own format and directory. Finding the one you want means remembering which tool, which project and which UUID. This plugin reads those stores, groups the sessions by agent, folder or tag, and resumes one with a click.
 
 ## Features
 
-- Four adapters: Claude Code, Antigravity (IDE and CLI), Pi and omp.
+- Five adapters: Claude Code, Codex, Antigravity (IDE and CLI), Pi and omp.
 - Group by agent, folder or tag; filter by folder or tag; search titles, paths and tags.
 - Collapsible groups, collapsed by default, with expand-all/collapse-all.
 - Resume in a new Tern tab with the agent's own command, or copy the command.
@@ -25,11 +25,12 @@ Claude Code, Antigravity, Pi and omp each keep conversations in their own format
 | Agent | Session files | Resume command |
 | --- | --- | --- |
 | Claude Code | `~/.claude/projects/<project>/<id>.jsonl` | `claude --resume <id>` |
+| Codex | `${CODEX_HOME:-~/.codex}/sessions/<year>/<month>/<day>/rollout-*.jsonl` (recursively scanned) | `codex resume <id>` |
 | Antigravity | `~/.gemini/antigravity{,-cli}/conversation_summaries.db`, plus `brain/<id>/.system_generated/logs/transcript_full.jsonl` (IDE transcripts are chunked under `chunks/transcript_full/`) | `agy --conversation <id>` |
 | Pi | `~/.pi/agent/sessions/<project>/<time>_<id>.jsonl` | `pi --session <id>` |
 | omp | `~/.omp/agent/sessions/<project>/<time>_<id>.jsonl` | `omp --resume <id>` |
 
-The plugin never writes to these files. Antigravity data is opened read-only through `node:sqlite`.
+Scanning and transcript rendering never write to session files. Antigravity data is opened read-only through `node:sqlite` during scanning.
 
 ## Install
 
@@ -66,12 +67,13 @@ Stored in `<Tern state>/plugin-data/agent-sessions/tags.db`, keyed by `agent` an
 
 - **Hide from this list** keeps the files. The eye button shows hidden sessions again, where they can be restored.
 - **Delete from disk...** asks once more, then removes the agent's files for that session: the JSONL and its companion directory for Claude/omp, the JSONL for Pi, or the conversation database, brain folder and summary rows for Antigravity. This cannot be undone, and the agent must not be using the session.
+- Codex sessions can be hidden but cannot be deleted from disk through this plugin.
 
 ## How it works
 
 The plugin is a window-half Tern plugin. `window.luau` draws a `tern.canvas` panel and handles actions; file and SQLite work runs in small Node helpers through `tern.process.run`:
 
-- `scan.js` walks the four stores and prints a JSON array of `{agent, id, title, cwd, path, time}`.
+- `scan.js` walks the five stores and prints a JSON array of `{agent, id, title, cwd, path, time}`.
 - `transcript.js` renders one session to Markdown (`--agent`, `--path`, `--id`).
 - `tags.js` manages the SQLite sidecar for aliases, tags and hidden sessions (`get`, `set`, `hidden`, `hide`, `unhide`).
 - `delete.js` removes one session's files after confirmation.
@@ -83,11 +85,14 @@ tern plugin link plugins/agent-sessions
 tern plugin reload
 ```
 
+Run fixture-based tests from the repository root with `node --test plugins/agent-sessions/codex.test.js`.
+
 Editing `window.luau` needs a reload; the Node helpers are read on the next scan or action.
 
 ## Limitations
 
 - Session formats are the agents' own, not public APIs. A format change can break an adapter. Parsers tolerate missing fields and skip unreadable files.
+- Codex scans active rollouts only, not archived sessions; titles come from the first user message and ordering uses file modification time. Tool calls and non-text content are not shown.
 - Antigravity conversations without a transcript show their summary title and no messages.
 - If `agents.auto_acp` intercepts `claude` or `agy`, `--resume` may not pass through. Add the id to `agents.keep_tui`, or use Copy, to resume in the native interface.
 - omp companion files without `.jsonl` are not listed; some are access-restricted while omp is running.
